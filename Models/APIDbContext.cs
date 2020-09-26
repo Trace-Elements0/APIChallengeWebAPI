@@ -12,7 +12,7 @@ namespace APIChallengeWebAPI.Models
         {
 
         }
-        public DbSet<Player> Players { get; set; }
-        public DbSet<Team> Teams { get; set; }
+        public DbSet<Player> Player { get; set; }
+        public DbSet<Team> Team { get; set; }
     }
 }
