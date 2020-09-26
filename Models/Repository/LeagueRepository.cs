@@ -18,17 +18,41 @@ namespace APIChallengeWebAPI.Repository
 
         public async Task<long> AddPlayer(Player player)
         {
-            
+            if (db != null)
+            {
+                await db.Player.AddAsync(player);
+                await db.SaveChangesAsync();
+                return player.PlayerId;
+            }
+
+            return 0;
         }
 
         public async Task<long> AddTeam(Team team)
         {
-
+            if (db != null)
+            {
+                await db.Team.AddAsync(team);
+                await db.SaveChangesAsync();
+                return team.Id;
+            }
+            return 0;
         }
 
-        public async Task<long> DeletePlayer(long? playerId, Team team)
+        public async Task<long> DeletePlayer(long? playerId)
         {
-
+            int result = 0;
+            if (db != null)
+            {
+                var player = await db.Player.FirstOrDefaultAsync(x => x.PlayerId == playerId);
+                if (player != null)
+                {
+                    db.Player.Remove(player);
+                    result = await db.SaveChangesAsync();
+                }
+                return result;
+            }
+            return result;
         }
 
         public async Task<long> DeleteTeam(long? teamId, Team team)
