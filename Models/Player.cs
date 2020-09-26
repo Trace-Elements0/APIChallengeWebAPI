@@ -7,20 +7,14 @@ using System.Threading.Tasks;
 
 namespace APIChallengeWebAPI.Models
 {
-    public class Player
+    public partial class Player
     {
-        [Key]
-        public long Id{ get; set; }
-        [Required]
-        [StringLength(400)]
+        public long PlayerId{ get; set; }
         public string FirstName { get; set; }
-        [Required]
-        [StringLength(400)]
         public string LastName { get; set; }
+        public long? TeamID {get;set;}
 
-
-        [ForeignKey("Teams")]//foreign key relationship with Team model class
-        public Team Team { get; set; }
+        public virtual Team Team { get; set; }
 
     }
 }

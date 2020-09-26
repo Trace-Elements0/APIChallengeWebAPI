@@ -24,7 +24,8 @@ namespace APIChallengeWebAPI
         {
             services.AddControllers();
             services.AddDbContext<APIDbContext>(opt => opt.UseInMemoryDatabase("ChallengeDatabase"));
-            services.AddControllers();
+            services.AddScoped<ILeagueRepository, LeagueRepository>();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

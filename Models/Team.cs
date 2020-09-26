@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace APIChallengeWebAPI.Models
 {
-    public class Team
+    public partial class Team
     {
-        [Key]
+      public Team()
+      {
+        Player = new HashSet<Player>();
+      }
         public long Id { get; set; }
-
-        [Required]
-        [StringLength(400)]
         public string Name { get; set; }
         public string Location { get; set; }
-        public long TeamID { get; set; }
+
+        public virtual ICollection<Player> Player {get;set;}
 
     }
 }
