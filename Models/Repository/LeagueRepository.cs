@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using APIChallengeWebAPI.Models;
 using APIChallengeWebAPI.ViewModel;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace APIChallengeWebAPI.Repository
 {
@@ -41,7 +43,21 @@ namespace APIChallengeWebAPI.Repository
 
         public async Task<List<LeagueViewModel>> GetPlayers()
         {
-
+            if (db!=null)
+            {
+                return await (from p in db.Player
+                    from t in db.Team
+                    where p.PlayerId == t.Id
+                    select new LeagueViewModel
+                    {
+                        PlayerId = p.PlayerId,
+                        FirstName = p.FirstName,
+                        LastName = p.LastName,
+                        TeamID = p.TeamID,
+                        TeamName = t.Name,
+                    }).ToListAsync();
+            }
+            return null;
         }
 
         public async Task<List<LeagueViewModel>> GetPlayersByLast(string lastName)
