@@ -84,7 +84,7 @@ namespace APIChallengeWebAPI.Repository
                         FirstName = p.FirstName,
                         LastName = p.LastName,
                         TeamID = p.TeamID,
-                        TeamName = t.Name,
+                        TeamName = t.Name
                     }).FirstOrDefaultAsync();
             }
 
@@ -104,7 +104,7 @@ namespace APIChallengeWebAPI.Repository
                         FirstName = p.FirstName,
                         LastName = p.LastName,
                         TeamID = p.TeamID,
-                        TeamName = t.Name,
+                        TeamName = t.Name
                     }).ToListAsync();
             }
             return null;
@@ -123,7 +123,7 @@ namespace APIChallengeWebAPI.Repository
                         FirstName = p.FirstName,
                         LastName = p.LastName,
                         TeamID = p.TeamID,
-                        TeamName = t.Name,
+                        TeamName = t.Name
                     }).ToListAsync();
             }
             return null;
@@ -142,7 +142,7 @@ namespace APIChallengeWebAPI.Repository
                         FirstName = p.FirstName,
                         LastName = p.LastName,
                         TeamID = p.TeamID,
-                        TeamName = t.Name,
+                        TeamName = t.Name
                     }).ToListAsync();
             }
             return null;
@@ -157,11 +157,19 @@ namespace APIChallengeWebAPI.Repository
             return null;
         }
 
-        public async Task<List<Team>> GetTeamsOrd()
+        public async Task<List<Team>> GetTeamsOrd(string location)
         {
             if (db != null)
             {
-                return await db.Team.OrderBy(t=>t.Location).ToListAsync();
+                return await (from t in db.Team
+                    where t.Location == location
+                    orderby t.Location
+                    select new Team
+                    {
+                        Id = t.Id,
+                       Name = t.Name,
+                       Location = t.Location
+                    }).ToListAsync();
             }
             return null;
         }
