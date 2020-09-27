@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using APIChallengeWebAPI.ViewModel;
 
 namespace APIChallengeWebAPI.Models
 {
@@ -12,7 +13,7 @@ namespace APIChallengeWebAPI.Models
         {
 
         }
-        public DbSet<Player> Player { get; set; }
-        public DbSet<Team> Team { get; set; }
+        public virtual DbSet<Player> Player { get; set; }
+        public virtual DbSet<Team> Team { get; set; }
     }
 }

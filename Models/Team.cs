@@ -12,7 +12,7 @@ namespace APIChallengeWebAPI.Models
       {
         Player = new HashSet<Player>();
       }
-        public long Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
 

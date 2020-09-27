@@ -9,10 +9,10 @@ namespace APIChallengeWebAPI.Models
 {
     public partial class Player
     {
-        public long PlayerId{ get; set; }
+        public int PlayerId{ get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public long? TeamID {get;set;}
+        public int? TeamID {get;set;}
 
         public virtual Team Team { get; set; }
 
