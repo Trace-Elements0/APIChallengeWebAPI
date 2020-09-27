@@ -16,7 +16,7 @@ namespace APIChallengeWebAPI.Repository
             db = _db;
         }
 
-        public async Task<long> AddPlayer(Player player)
+        public async Task<int> AddPlayer(Player player)
         {
             if (db != null)
             {
@@ -28,7 +28,7 @@ namespace APIChallengeWebAPI.Repository
             return 0;
         }
 
-        public async Task<long> AddTeam(Team team)
+        public async Task<int> AddTeam(Team team)
         {
             if (db != null)
             {
@@ -39,7 +39,7 @@ namespace APIChallengeWebAPI.Repository
             return 0;
         }
 
-        public async Task<long> DeletePlayer(long? playerId)
+        public async Task<int> DeletePlayer(int? playerId)
         {
             int result = 0;
             if (db != null)
@@ -55,7 +55,7 @@ namespace APIChallengeWebAPI.Repository
             return result;
         }
 
-        public async Task<long> DeleteTeam(long? teamId)
+        public async Task<int> DeleteTeam(int? teamId)
         {
             int result = 0;
             if (db != null)
@@ -71,7 +71,7 @@ namespace APIChallengeWebAPI.Repository
             return result;
         }
 
-        public async Task<LeagueViewModel> GetPlayer(long? playerId)
+        public async Task<LeagueViewModel> GetPlayer(int? playerId)
         {
             if (db != null)
             {
@@ -129,7 +129,7 @@ namespace APIChallengeWebAPI.Repository
             return null;
         }
 
-        public async Task<List<LeagueViewModel>> GetPlayersPerTeam(long teamID)
+        public async Task<List<LeagueViewModel>> GetPlayersPerTeam(int? teamID)
         {
             if (db != null)
             {
