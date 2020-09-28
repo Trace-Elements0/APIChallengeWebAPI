@@ -246,5 +246,29 @@ namespace APIChallengeWebAPI.Controllers
             await league.AddPlayer(player);
             return CreatedAtAction(nameof(GetPlayers), new { id = player.PlayerId }, player);
         }
+        // GET: /GetTeams
+        [HttpGet]
+        [Route("GetTeamsByOrder")]
+        public async Task<ActionResult> GetTeamsByOrder(string x)
+        {
+            if (x == null)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                var team = await league.GetTeamByOrder(x);
+                if (team == null)
+                {
+                    return NotFound();
+                }
+                return Ok(team);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
     }
 }
