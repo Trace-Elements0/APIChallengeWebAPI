@@ -11,5 +11,6 @@ namespace APIChallengeWebAPI.ViewModel
         public string LastName { get; set; }
         public int? TeamID { get; set; }
         public string TeamName{ get; set; }
+        public string TeamLocation { get; set; }
     }
 }
