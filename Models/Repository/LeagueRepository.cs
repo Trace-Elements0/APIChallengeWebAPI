@@ -157,7 +157,7 @@ namespace APIChallengeWebAPI.Repository
             return null;
         }
 
-        public async Task<List<Team>> GetTeamsOrd(string location)
+        public async Task<List<Team>> GetTeamsByLoc(string location)
         {
             if (db != null)
             {

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using APIChallengeWebAPI.Models;
 using APIChallengeWebAPI.Repository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+using APIChallengeWebAPI.ViewModel;
 
 namespace APIChallengeWebAPI.Controllers
 {
@@ -13,19 +14,21 @@ namespace APIChallengeWebAPI.Controllers
     [ApiController]
     public class TeamController : ControllerBase
     {
-        private ILeagueRepository leagueRepository;
+        private ILeagueRepository league;
 
-        public TeamController(ILeagueRepository _leagueRepository)
+        public TeamController(ILeagueRepository context)
         {
-            leagueRepository = _leagueRepository;
+            league = context;
         }
+
+        // GET: /GetTeams
         [HttpGet]
         [Route("GetTeams")]
         public async Task<IActionResult> GetTeams()
         {
             try
             {
-                var teams = await leagueRepository.GetTeams();
+                var teams = await league.GetTeams();
                 if (teams == null)
                 {
                     return NotFound();
@@ -38,13 +41,108 @@ namespace APIChallengeWebAPI.Controllers
                 return BadRequest();
             }
         }
+        //GET: /GetPlayer/id
         [HttpGet]
-        [Route("GetTeamsOrd")]
-        public async Task<IActionResult> GetTeamsOrd(string loc)
+        [Route("GetPlayer")]
+        public async Task<IActionResult> GetPlayer(int? playerId)
+        {
+            if (playerId == null)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                var player = await league.GetPlayer(playerId);
+                if (player == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(player);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        //GET: /GetPlayers
+        [HttpGet]
+        [Route("GetPlayers")]
+        public async Task<IActionResult> GetPlayers()
         {
             try
             {
-                var teams = await leagueRepository.GetTeamsOrd(loc);
+                var players = await league.GetPlayers();
+                if (players == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(players);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        //GET: /GetPlayersByLast
+        [HttpGet]
+        [Route("GetPlayersByLast")]
+        public async Task<IActionResult> GetPlayersByLast(string last)
+        {
+            if (last == null)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                var players = await league.GetPlayersByLast(last);
+                if (players == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(players);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+        //GET: /GetPlayersPerTeam
+        [HttpGet]
+        [Route("GetPlayersPerTeam")]
+        public async Task<IActionResult> GetPlayersPerTeam(int? teamId)
+        {
+            if (teamId == null)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                var players = await league.GetPlayersPerTeam(teamId);
+                if (players == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(players);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        //GET: //GetTeamsOrd
+        [HttpGet]
+        [Route("GetTeamsByLoc")]
+        public async Task<IActionResult> GetTeamsByLoc(string loc)
+        {
+            try
+            {
+                var teams = await league.GetTeamsByLoc(loc);
                 if (teams == null)
                 {
                     return NotFound();
@@ -57,6 +155,7 @@ namespace APIChallengeWebAPI.Controllers
                 return BadRequest();
             }
         }
+        //GET: /GetTeam
         [HttpGet]
         [Route("GetTeam")]
         public async Task<IActionResult> GetTeam(string name)
@@ -68,7 +167,7 @@ namespace APIChallengeWebAPI.Controllers
 
             try
             {
-                var team = await leagueRepository.GetTeam(name);
+                var team = await league.GetTeam(name);
                 if (team == null)
                 {
                     return NotFound();
@@ -81,18 +180,20 @@ namespace APIChallengeWebAPI.Controllers
                 return BadRequest();
             }
         }
+        //DELETE: /DeletePlayer
         [HttpDelete]
-        [Route("DeleteTeam")]
-        public async Task<IActionResult> DeleteTeam(int? id)
+        [Route("DeletePlayer")]
+        public async Task<IActionResult> DeletePlayer(int? id)
         {
             int result = 0;
             if (id == null)
             {
                 return BadRequest();
             }
+
             try
             {
-                result = await leagueRepository.DeleteTeam(id);
+                result = await league.DeletePlayer(id);
                 if (result == 0)
                 {
                     return NotFound();
@@ -104,27 +205,46 @@ namespace APIChallengeWebAPI.Controllers
                 return BadRequest();
             }
         }
-        [HttpPut]
-        [Route("AddTeam")]
-        public async Task<IActionResult> AddTeam([FromBody] Team model)
+        //DELETE: /DeleteTeam
+        [HttpDelete]
+        [Route("DeleteTeam")]
+        public async Task<IActionResult> DeleteTeam(int? id)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            int result = 0;
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
             try
             {
-                var team = await leagueRepository.AddTeam(model);
-                if (team > 0)
-                {
-                    return Ok(team);
-                }
-                else
+                result = await league.DeleteTeam(id);
+                if (result == 0)
                 {
                     return NotFound();
                 }
+                return Ok();
             }
             catch (Exception)
             {
                 return BadRequest();
             }
+        }
+        //POST: /AddPlayer
+        [HttpPost]
+        [Route("AddTeam")]//works
+        public async Task<ActionResult> AddTeam([FromBody] Team team)//works
+        {
+            await league.AddTeam(team);
+            return CreatedAtAction(nameof(GetTeams), new { id = team.Id }, team);
+        }
+
+        [HttpPost]
+        [Route("AddPlayer")]//works
+        public async Task<ActionResult> AddPlayer([FromBody] Player player)
+        {
+            await league.AddPlayer(player);
+            return CreatedAtAction(nameof(GetPlayers), new { id = player.PlayerId }, player);
         }
     }
 }
