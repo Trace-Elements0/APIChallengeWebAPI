@@ -21,7 +21,8 @@ namespace APIChallengeWebAPI.Repository
         Task<List<Team>> GetTeams(); //get all teams
         Task<List<Team>> GetTeamsByLoc(string location); //get teams ordered by name or location
         Task<LeagueViewModel> GetTeam(string teamName); //get team by name
-        
+        Task<List<LeagueViewModel>> GetTeamByOrder(string orderBy);
+
 
 
     }

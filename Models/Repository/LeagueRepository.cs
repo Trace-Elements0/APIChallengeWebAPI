@@ -20,8 +20,13 @@ namespace APIChallengeWebAPI.Repository
         {
             if (db != null)
             {
-                await db.Player.AddAsync(player);
-                await db.SaveChangesAsync();
+                var count = player.Team.Players.Count(p => p.Team.Id == player.Team.Id);
+                if (count < 8)
+                {
+                    await db.Player.AddAsync(player);
+                    await db.SaveChangesAsync();
+                }
+
                 return player.PlayerId;
             }
 
@@ -36,6 +41,7 @@ namespace APIChallengeWebAPI.Repository
                 await db.SaveChangesAsync();
                 return team.Id;
             }
+
             return 0;
         }
 
@@ -50,8 +56,10 @@ namespace APIChallengeWebAPI.Repository
                     db.Player.Remove(player);
                     result = await db.SaveChangesAsync();
                 }
+
                 return result;
             }
+
             return result;
         }
 
@@ -66,8 +74,10 @@ namespace APIChallengeWebAPI.Repository
                     db.Team.Remove(team);
                     result = await db.SaveChangesAsync();
                 }
+
                 return result;
             }
+
             return result;
         }
 
@@ -83,7 +93,7 @@ namespace APIChallengeWebAPI.Repository
                         PlayerId = p.PlayerId,
                         FirstName = p.FirstName,
                         LastName = p.LastName,
-                        TeamID = p.TeamID,
+                        TeamID = t.Id,
                         TeamName = t.Name
                     }).FirstOrDefaultAsync();
             }
@@ -93,7 +103,7 @@ namespace APIChallengeWebAPI.Repository
 
         public async Task<List<LeagueViewModel>> GetPlayers()
         {
-            if (db!=null)
+            if (db != null)
             {
                 return await (from p in db.Player
                     from t in db.Team
@@ -103,10 +113,11 @@ namespace APIChallengeWebAPI.Repository
                         PlayerId = p.PlayerId,
                         FirstName = p.FirstName,
                         LastName = p.LastName,
-                        TeamID = p.TeamID,
+                        TeamID = t.Id,
                         TeamName = t.Name
                     }).ToListAsync();
             }
+
             return null;
         }
 
@@ -122,10 +133,11 @@ namespace APIChallengeWebAPI.Repository
                         PlayerId = p.PlayerId,
                         FirstName = p.FirstName,
                         LastName = p.LastName,
-                        TeamID = p.TeamID,
+                        TeamID = t.Id,
                         TeamName = t.Name
                     }).ToListAsync();
             }
+
             return null;
         }
 
@@ -135,16 +147,17 @@ namespace APIChallengeWebAPI.Repository
             {
                 return await (from p in db.Player
                     from t in db.Team
-                    where p.TeamID == teamID
+                    where t.Id == teamID
                     select new LeagueViewModel
                     {
                         PlayerId = p.PlayerId,
                         FirstName = p.FirstName,
                         LastName = p.LastName,
-                        TeamID = p.TeamID,
+                        TeamID = t.Id,
                         TeamName = t.Name
                     }).ToListAsync();
             }
+
             return null;
         }
 
@@ -154,6 +167,7 @@ namespace APIChallengeWebAPI.Repository
             {
                 return await db.Team.ToListAsync();
             }
+
             return null;
         }
 
@@ -167,13 +181,15 @@ namespace APIChallengeWebAPI.Repository
                     select new Team
                     {
                         Id = t.Id,
-                       Name = t.Name,
-                       Location = t.Location
+                        Name = t.Name,
+                        Location = t.Location
                     }).ToListAsync();
             }
+
             return null;
         }
-        public async Task<LeagueViewModel> GetTeam(string teamName) 
+
+        public async Task<LeagueViewModel> GetTeam(string teamName)
         {
             if (db != null)
             {
@@ -185,7 +201,7 @@ namespace APIChallengeWebAPI.Repository
                         PlayerId = p.PlayerId,
                         FirstName = p.FirstName,
                         LastName = p.LastName,
-                        TeamID = p.TeamID,
+                        TeamID = t.Id,
                         TeamName = t.Name,
                     }).FirstOrDefaultAsync();
             }
@@ -193,6 +209,36 @@ namespace APIChallengeWebAPI.Repository
             return null;
         }
 
+        public async Task<List<LeagueViewModel>> GetTeamByOrder(string orderBy)
+        {
+            if (db != null)
+            {
+                var model = new List<LeagueViewModel>();
+                if (orderBy?.ToLower() == "location")
+                {
+                    return await (from t in db.Team
+                        orderby t.Location
+                        select new LeagueViewModel
+                        {
+                            TeamLocation = t.Location,
+                            TeamName = t.Name
+                        }).ToListAsync();
+                }
+                else if ((orderBy?.ToLower() == "teamname"))
+                {
+                    return await (from t in db.Team
+                        orderby t.Name
+                        select new LeagueViewModel
+                        {
+                            TeamLocation = t.Location,
+                            TeamName = t.Name
+                        }).ToListAsync();
+                }
 
+                return null;
+            }
+
+            return null;
+        }
     }
 }
