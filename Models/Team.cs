@@ -10,13 +10,12 @@ namespace APIChallengeWebAPI.Models
     {
       public Team()
       {
-        Player = new HashSet<Player>();
+        Players = new HashSet<Player>();
       }
         public int Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
-
-        public virtual ICollection<Player> Player {get;set;}
+        public virtual ICollection<Player> Players {get; set;}
 
     }
 }
